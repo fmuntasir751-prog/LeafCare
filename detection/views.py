@@ -13,7 +13,7 @@ from django.views.decorators.http import require_http_methods
 
 from .forms import LeafUploadForm
 from .models import Prediction
-from .predictor import predict_leaf
+from .predictor import NotTomatoLeafError, predict_leaf
 
 
 @require_http_methods(["GET", "POST"])
@@ -50,12 +50,17 @@ def home(request):
 
             try:
                 result = predict_leaf(image)
+
+            except NotTomatoLeafError as error:
+                form.add_error("image", str(error))
+
             except FileNotFoundError:
                 form.add_error(
                     None,
-                    "The trained model is unavailable. "
+                    "A required model file is unavailable. "
                     "Please contact the administrator.",
                 )
+
             except (OSError, RuntimeError, ValueError, KeyError):
                 form.add_error(
                     None,
@@ -63,6 +68,7 @@ def home(request):
                     "Please try another image or contact "
                     "the administrator.",
                 )
+
             else:
                 prediction = Prediction.objects.create(
                     user=request.user,

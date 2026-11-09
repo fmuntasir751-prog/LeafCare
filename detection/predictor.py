@@ -15,10 +15,13 @@ LABELS = {
 }
 
 
-@lru_cache(maxsize=1)
-def load_model():
+class NotTomatoLeafError(ValueError):
+    pass
+
+
+def build_model(filename):
     checkpoint = torch.load(
-        settings.BASE_DIR / "artifacts" / "leafcare_best.pt",
+        settings.BASE_DIR / "artifacts" / filename,
         map_location="cpu",
         weights_only=True,
     )
@@ -40,12 +43,46 @@ def load_model():
     return model, classes, preprocess
 
 
-def predict_leaf(upload):
-    model, classes, preprocess = load_model()
+@lru_cache(maxsize=1)
+def load_model():
+    return build_model("leafcare_best.pt")
 
+
+@lru_cache(maxsize=1)
+def load_checker():
+    model, classes, preprocess = build_model(
+        "leaf_check_best.pt"
+    )
+
+    if classes != ["not_tomato_leaf", "tomato_leaf"]:
+        raise ValueError("Unexpected leaf checker classes.")
+
+    return model, classes, preprocess
+
+
+def predict_leaf(upload):
     upload.seek(0)
+
     with Image.open(upload) as image:
-        tensor = preprocess(image.convert("RGB")).unsqueeze(0)
+        rgb = image.convert("RGB")
+
+    checker, checker_classes, checker_preprocess = load_checker()
+    checker_input = checker_preprocess(rgb).unsqueeze(0)
+
+    with torch.inference_mode():
+        checker_scores = checker(checker_input)[0]
+        checker_index = int(checker_scores.argmax().item())
+
+    # Same argmax decision rule used during checker evaluation.
+    if checker_classes[checker_index] != "tomato_leaf":
+        raise NotTomatoLeafError(
+            "This image was not accepted as a tomato leaf. "
+            "Please upload a clear photo of a single tomato leaf. "
+            "The checker can also make mistakes."
+        )
+
+    model, classes, preprocess = load_model()
+    tensor = preprocess(rgb).unsqueeze(0)
 
     with torch.inference_mode():
         scores = torch.softmax(model(tensor), dim=1)[0]

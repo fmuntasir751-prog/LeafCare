@@ -138,3 +138,32 @@ and applicable usage terms.
 ## Local files excluded from Git
 
 .env, .venv/, db.sqlite3, data/, dataset-source/ and model weights.
+## Experimental tomato leaf checker
+
+Before disease classification, a separate MobileNetV3 Small
+classifier checks whether the image is accepted as a tomato leaf.
+
+- Training: 2,000 images
+- Validation: 400 images
+- Test: 400 images
+- Test accuracy: 100% on the selected test set
+- Data: PlantVillage tomato leaves versus selected Imagenette images
+- Decision rule: argmax
+- Rejected uploads are not saved as disease predictions.
+
+This result does not establish reliable rejection of all unknown
+images. Other plant leaves and real-world phone photos still need
+evaluation.
+
+Prediction now requires both model files:
+
+- artifacts/leafcare_best.pt
+- artifacts/leaf_check_best.pt
+
+Checker preparation and evaluation:
+
+    python prepare_leaf_check.py
+    python train_leaf_check.py
+    python evaluate_leaf_check.py
+
+Imagenette source: https://github.com/fastai/imagenette

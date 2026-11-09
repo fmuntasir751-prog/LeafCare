@@ -1,0 +1,50 @@
+{
+  "epoch": 6,
+  "test_images": 400,
+  "accuracy": 1.0,
+  "classes": [
+    "not_tomato_leaf",
+    "tomato_leaf"
+  ],
+  "classification_report": {
+    "not_tomato_leaf": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 200.0
+    },
+    "tomato_leaf": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 200.0
+    },
+    "accuracy": 1.0,
+    "macro avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 400.0
+    },
+    "weighted avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 400.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      200,
+      0
+    ],
+    [
+      0,
+      200
+    ]
+  ],
+  "false_accepts": 0,
+  "false_rejects": 0,
+  "decision_rule": "argmax",
+  "scope": "PlantVillage tomato vs selected Imagenette images"
+}
