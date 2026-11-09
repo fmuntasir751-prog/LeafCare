@@ -1,0 +1,29 @@
+{% extends "detection/base.html" %}
+
+{% block title %}Login | LeafCare{% endblock %}
+
+{% block content %}
+<section class="card auth-card">
+    <h1>Welcome back</h1>
+    <p class="muted">
+        Login to analyze a leaf or view your saved results.
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="hidden" name="next" value="{{ next }}">
+
+        <button class="full-width" type="submit">
+            Login
+        </button>
+    </form>
+
+    <p>
+        New to LeafCare?
+        <a href="{% url 'detection:register' %}">
+            Create an account
+        </a>
+    </p>
+</section>
+{% endblock %}

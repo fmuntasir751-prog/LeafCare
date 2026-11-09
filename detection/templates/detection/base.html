@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{% block title %}LeafCare{% endblock %}</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'detection/style.css' %}"
+    >
+</head>
+
+<body>
+    <header>
+        <a class="brand" href="{% url 'detection:home' %}">
+            🌿 LeafCare
+        </a>
+
+        <nav aria-label="Main navigation">
+            {% if request.user.is_authenticated %}
+                <span>Hello, {{ request.user.username }}</span>
+
+                <a href="{% url 'detection:dashboard' %}">
+                    Dashboard
+                </a>
+
+                <a href="{% url 'detection:performance' %}">
+                    Model Performance
+                </a>
+
+                <a href="{% url 'detection:home' %}">
+                    Analyze
+                </a>
+
+                <a href="{% url 'detection:history' %}">
+                    My History
+                </a>
+
+                <form
+                    class="logout-form"
+                    method="post"
+                    action="{% url 'detection:logout' %}"
+                >
+                    {% csrf_token %}
+
+                    <button class="logout-button" type="submit">
+                        Logout
+                    </button>
+                </form>
+            {% else %}
+                <a href="{% url 'detection:login' %}">
+                    Login
+                </a>
+
+                <a href="{% url 'detection:register' %}">
+                    Register
+                </a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

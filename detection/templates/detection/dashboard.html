@@ -1,0 +1,84 @@
+{% extends "detection/base.html" %}
+
+{% block title %}Dashboard | LeafCare{% endblock %}
+
+{% block content %}
+<section class="card">
+    <h1>Your dashboard</h1>
+
+    <p class="muted">
+        Welcome, {{ request.user.username }}.
+        Here is a summary of your saved analyses.
+    </p>
+
+    <div class="stats">
+        <article class="stat">
+            <span>Total analyses</span>
+            <strong>{{ total }}</strong>
+        </article>
+
+        <article class="stat">
+            <span>Healthy predictions</span>
+            <strong>{{ healthy }}</strong>
+        </article>
+
+        <article class="stat">
+            <span>Disease predictions</span>
+            <strong>{{ disease }}</strong>
+        </article>
+    </div>
+
+    <p class="muted">
+        These counts summarize model predictions, not confirmed
+        diagnoses or the number of unique plants.
+    </p>
+
+    <p>
+        <a href="{% url 'detection:home' %}">
+            Analyze a leaf →
+        </a>
+    </p>
+</section>
+
+<section class="card" style="margin-top: 24px;">
+    <h2>Recent analyses</h2>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th scope="col">Date / Time (Japan)</th>
+                    <th scope="col">Prediction</th>
+                    <th scope="col">Model score</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in recent %}
+                    <tr>
+                        <td>
+                            {{ item.created_at|date:"Y-m-d H:i" }}
+                        </td>
+                        <td>{{ item.label }}</td>
+                        <td class="score">
+                            {{ item.score|floatformat:2 }}%
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3" class="empty">
+                            No analyses yet. Upload your first leaf.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <p>
+        <a href="{% url 'detection:history' %}">
+            View history →
+        </a>
+    </p>
+</section>
+{% endblock %}

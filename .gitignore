@@ -1,0 +1,25 @@
+# Python environment and cache
+.venv/
+__pycache__/
+*.py[cod]
+
+# Local database and secrets
+db.sqlite3
+db.sqlite3-journal
+.env
+.env.*
+!.env.example
+
+# Datasets and downloaded repository
+data/
+dataset-source/
+
+# Trained model files
+artifacts/*.pt
+artifacts/*.pth
+
+# Editor and operating system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

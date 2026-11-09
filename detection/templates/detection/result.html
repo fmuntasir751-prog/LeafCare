@@ -1,0 +1,40 @@
+{% extends "detection/base.html" %}
+
+{% block title %}Analysis Result | LeafCare{% endblock %}
+
+{% block content %}
+<section class="card">
+    <div class="tag">ANALYSIS SAVED</div>
+
+    <h1>Analysis result</h1>
+
+    <h2 class="result-label">{{ prediction.label }}</h2>
+
+    <p>
+        Model score:
+        <strong>{{ prediction.score|floatformat:2 }}%</strong>
+    </p>
+
+    <p class="muted">
+        {{ prediction.created_at|date:"Y-m-d H:i" }} (Japan)
+    </p>
+
+    <p class="notice">
+        This prototype compares four tomato leaf classes.
+        Unknown diseases and unrelated images may receive
+        incorrect results. Model scores do not guarantee accuracy.
+    </p>
+
+    <p>
+        <a href="{% url 'detection:home' %}">
+            Analyze another leaf →
+        </a>
+    </p>
+
+    <p>
+        <a href="{% url 'detection:history' %}">
+            View my history →
+        </a>
+    </p>
+</section>
+{% endblock %}

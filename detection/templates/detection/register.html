@@ -1,0 +1,25 @@
+{% extends "detection/base.html" %}
+
+{% block title %}Create Account | LeafCare{% endblock %}
+
+{% block content %}
+<section class="card auth-card">
+    <h1>Create your account</h1>
+    <p class="muted">
+        Analyze tomato leaves and keep your prediction history.
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="full-width" type="submit">
+            Create Account
+        </button>
+    </form>
+
+    <p>
+        Already registered?
+        <a href="{% url 'detection:login' %}">Login</a>
+    </p>
+</section>
+{% endblock %}

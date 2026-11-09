@@ -1,0 +1,58 @@
+{% extends "detection/base.html" %}
+{% load static %}
+
+{% block title %}Analyze Leaf | LeafCare{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="tag">PLANT DISEASE DETECTION</div>
+
+    <h1>Understand your plant, one leaf at a time.</h1>
+
+    <p class="intro">
+        Upload a clear photo of a single tomato leaf.
+        LeafCare compares healthy leaves, early blight,
+        late blight, and leaf mold.
+    </p>
+</section>
+
+<section class="card">
+    <h2>Upload a leaf photo</h2>
+
+    <form
+        id="upload-form"
+        method="post"
+        enctype="multipart/form-data"
+    >
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <p class="hint">JPEG or PNG · Maximum 5 MB</p>
+
+        <img
+            id="selected-preview"
+            class="preview"
+            alt="Selected photo preview"
+            hidden
+        >
+
+        <button
+            id="analyze-button"
+            class="upload-button"
+            type="submit"
+        >
+            Analyze Leaf
+        </button>
+
+        <p
+            id="upload-status"
+            class="hint"
+            role="status"
+        ></p>
+    </form>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'detection/upload.js' %}" defer></script>
+{% endblock %}

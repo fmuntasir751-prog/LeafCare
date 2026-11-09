@@ -1,0 +1,114 @@
+{% extends "detection/base.html" %}
+
+{% block title %}My History | LeafCare{% endblock %}
+
+{% block content %}
+<section class="card">
+    <h1>My prediction history</h1>
+
+    <p class="muted">
+        {{ total }} matching records. Up to 20 results per page.
+        Model scores do not guarantee a correct result.
+    </p>
+
+    <form method="get" class="filter-form">
+        <div>
+            <label for="condition">Prediction type</label>
+
+            <select id="condition" name="condition">
+                <option value="">All predictions</option>
+
+                {% for value, label in choices %}
+                    <option
+                        value="{{ value }}"
+                        {% if selected == value %}selected{% endif %}
+                    >
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit">Apply Filter</button>
+
+        <a href="{% url 'detection:history' %}">Reset</a>
+    </form>
+
+    <p>
+        <a href="{% url 'detection:home' %}">
+            Analyze another leaf →
+        </a>
+    </p>
+
+    <p>
+        <a href="{% url 'detection:export_history' %}">
+            Download All History CSV ↓
+        </a>
+    </p>
+
+    <p class="muted">
+        CSV includes all your saved predictions,
+        regardless of the selected filter.
+    </p>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th scope="col">Date / Time (Japan)</th>
+                    <th scope="col">Prediction</th>
+                    <th scope="col">Model score</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in predictions %}
+                    <tr>
+                        <td>
+                            {{ item.created_at|date:"Y-m-d H:i" }}
+                        </td>
+
+                        <td>
+                            <a href="{% url 'detection:result' item.pk %}">
+                                {{ item.label }}
+                            </a>
+                        </td>
+
+                        <td class="score">
+                            {{ item.score|floatformat:2 }}%
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3" class="empty">
+                            No predictions match this filter.
+                            Try another filter or analyze a leaf.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if page_obj.has_other_pages %}
+        <nav class="pagination" aria-label="History pages">
+            {% if page_obj.has_previous %}
+                <a href="?condition={{ selected|urlencode }}&amp;page={{ page_obj.previous_page_number }}">
+                    ← Previous
+                </a>
+            {% endif %}
+
+            <span>
+                Page {{ page_obj.number }}
+                of {{ page_obj.paginator.num_pages }}
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?condition={{ selected|urlencode }}&amp;page={{ page_obj.next_page_number }}">
+                    Next →
+                </a>
+            {% endif %}
+        </nav>
+    {% endif %}
+</section>
+{% endblock %}

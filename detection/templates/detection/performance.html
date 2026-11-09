@@ -1,0 +1,105 @@
+{% extends "detection/base.html" %}
+
+{% block title %}Model Performance | LeafCare{% endblock %}
+
+{% block content %}
+<section class="card">
+    <h1>Model performance</h1>
+
+    <p class="muted">
+        Saved evaluation results for the MobileNetV3 Small model.
+        These are dataset test results, not your personal history.
+    </p>
+
+    {% if report %}
+        <div class="stats">
+            <article class="stat">
+                <span>Test accuracy</span>
+                <strong>
+                    {{ report.accuracy_percent|floatformat:2 }}%
+                </strong>
+            </article>
+
+            <article class="stat">
+                <span>Test images</span>
+                <strong>{{ report.test_images }}</strong>
+            </article>
+
+            <article class="stat">
+                <span>Selected epoch</span>
+                <strong>{{ report.epoch }}</strong>
+            </article>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Class</th>
+                        <th scope="col">Precision</th>
+                        <th scope="col">Recall</th>
+                        <th scope="col">F1</th>
+                        <th scope="col">Images</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for row in rows %}
+                        <tr>
+                            <th scope="row">{{ row.name }}</th>
+                            <td>{{ row.precision|floatformat:2 }}%</td>
+                            <td>{{ row.recall|floatformat:2 }}%</td>
+                            <td>{{ row.f1|floatformat:2 }}%</td>
+                            <td>{{ row.support|floatformat:0 }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+<h2 class="section-title">Confusion matrix</h2>
+
+<img
+    class="matrix-image"
+    src="{% url 'detection:confusion_matrix_image' %}"
+    alt="Confusion matrix comparing actual and predicted tomato leaf classes"
+>
+
+<p class="muted">
+    Rows show actual classes; columns show predicted classes.
+    Diagonal cells are correct predictions.
+    Other cells show classification mistakes.
+</p>
+        <details class="notice">
+            <summary>What do these metrics mean?</summary>
+
+            <p>
+                Precision: among predictions for a class,
+                how many were correct.
+            </p>
+
+            <p>
+                Recall: among actual images of a class,
+                how many the model correctly identified.
+            </p>
+
+            <p>
+                F1: a combined measure of precision and recall.
+            </p>
+        </details>
+
+        <p class="notice">
+            Testing used a split from the same PlantVillage dataset.
+            Exact pixel duplicates were excluded before splitting.
+            Similar photos or different photos of the same leaf may
+            still exist across splits. Performance on real-world
+            phone photos has not yet been established.
+        </p>
+    {% else %}
+        <p class="notice">
+            Evaluation report is unavailable.
+            Ask the administrator to check
+            artifacts/test_metrics.json.
+        </p>
+    {% endif %}
+</section>
+{% endblock %}
