@@ -51,7 +51,7 @@ def load_model():
 @lru_cache(maxsize=1)
 def load_checker():
     model, classes, preprocess = build_model(
-        "leaf_check_best.pt"
+        "leaf_check_v2_best.pt"
     )
 
     if classes != ["not_tomato_leaf", "tomato_leaf"]:

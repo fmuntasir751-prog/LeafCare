@@ -1,0 +1,62 @@
+{
+  "dataset": "leaf_check_v2/test",
+  "decision_rule": "argmax",
+  "results": {
+    "v1": {
+      "epoch": 6,
+      "accuracy": 0.7444444444444445,
+      "balanced_accuracy": 0.7970588235294118,
+      "confusion_matrix": [
+        [
+          202,
+          138
+        ],
+        [
+          0,
+          200
+        ]
+      ],
+      "tomato_images": 200,
+      "tomato_false_rejections": 0,
+      "tomato_acceptance_rate": 1.0,
+      "other_leaves": {
+        "images": 140,
+        "incorrectly_accepted": 138,
+        "false_acceptance_rate": 0.9857142857142858
+      },
+      "objects": {
+        "images": 200,
+        "incorrectly_accepted": 0,
+        "false_acceptance_rate": 0.0
+      }
+    },
+    "v2": {
+      "epoch": 9,
+      "accuracy": 0.9796296296296296,
+      "balanced_accuracy": 0.980735294117647,
+      "confusion_matrix": [
+        [
+          332,
+          8
+        ],
+        [
+          3,
+          197
+        ]
+      ],
+      "tomato_images": 200,
+      "tomato_false_rejections": 3,
+      "tomato_acceptance_rate": 0.985,
+      "other_leaves": {
+        "images": 140,
+        "incorrectly_accepted": 7,
+        "false_acceptance_rate": 0.05
+      },
+      "objects": {
+        "images": 200,
+        "incorrectly_accepted": 1,
+        "false_acceptance_rate": 0.005
+      }
+    }
+  }
+}
