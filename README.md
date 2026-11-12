@@ -167,3 +167,50 @@ Checker preparation and evaluation:
     python evaluate_leaf_check.py
 
 Imagenette source: https://github.com/fastai/imagenette
+## Experimental Tomato Leaf Checker V2
+
+Before disease classification, LeafCare checks whether an image
+appears to show a tomato leaf.
+
+V2 adds non-tomato plant leaves to the negative training examples.
+
+### V1 and V2 comparison
+
+Both checkers were evaluated on the same 540-image test set:
+
+- 200 tomato leaf images
+- 140 non-tomato leaf images
+- 200 other object images
+
+| Metric | V1 | V2 |
+|---|---:|---:|
+| Accuracy | 74.44% | 97.96% |
+| Balanced accuracy | 79.71% | 98.07% |
+| Tomato acceptance | 100.00% | 98.50% |
+| Non-tomato leaves incorrectly accepted | 138/140 | 7/140 |
+| Other objects incorrectly accepted | 0/200 | 1/200 |
+
+V2 selected epoch: 9, based on validation performance.
+The decision rule is argmax.
+
+### Limitations
+
+- Some test images were reused from the earlier checker evaluation.
+- Exact pixel duplicates were excluded during preparation, but
+  similar images or photographs of the same leaf may cross splits.
+- Performance on independently collected phone photos is not yet
+  established.
+- The checker can accept unrelated images and reject tomato leaves.
+- Checker accuracy and disease classification accuracy are separate
+  measurements; overall pipeline accuracy has not been measured.
+- Model scores are not calibrated guarantees of correctness.
+
+### Required model files
+
+Place these files inside the artifacts directory:
+
+- leafcare_best.pt
+- leaf_check_v2_best.pt
+
+Model files and datasets are excluded from Git.
+Keep a separate backup of the trained models.
