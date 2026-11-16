@@ -1,76 +1,172 @@
 {% extends "detection/base.html" %}
 
-{% block title %}My History | LeafCare{% endblock %}
+{% block title %}
+    {% if current_language == "ja" %}解析履歴{% else %}My History{% endif %} | LeafCare
+{% endblock %}
 
 {% block content %}
 <section class="card">
-    <h1>My prediction history</h1>
+    <h1>
+        {% if current_language == "ja" %}
+            自分の解析履歴
+        {% else %}
+            My prediction history
+        {% endif %}
+    </h1>
 
     <p class="muted">
-        {{ total }} matching records. Up to 20 results per page.
-        Model scores do not guarantee a correct result.
+        {% if current_language == "ja" %}
+            該当件数：{{ total }}件。1ページに最大20件表示します。
+            モデルスコアは結果の正しさを保証するものではありません。
+        {% else %}
+            {{ total }} matching records. Up to 20 results per page.
+            Model scores do not guarantee a correct result.
+        {% endif %}
     </p>
 
     <form method="get" class="filter-form">
         <div>
-            <label for="condition">Prediction type</label>
+            <label for="condition">
+                {% if current_language == "ja" %}
+                    予測の種類
+                {% else %}
+                    Prediction type
+                {% endif %}
+            </label>
 
             <select id="condition" name="condition">
-                <option value="">All predictions</option>
+                <option value="">
+                    {% if current_language == "ja" %}
+                        すべての予測
+                    {% else %}
+                        All predictions
+                    {% endif %}
+                </option>
 
                 {% for value, label in choices %}
                     <option
                         value="{{ value }}"
                         {% if selected == value %}selected{% endif %}
                     >
-                        {{ label }}
+                        {% if current_language == "ja" %}
+                            {% if value == "healthy" %}
+                                トマト — 健康
+                            {% elif value == "early_blight" %}
+                                トマト — 夏疫病
+                            {% elif value == "late_blight" %}
+                                トマト — 疫病
+                            {% elif value == "leaf_mold" %}
+                                トマト — 葉かび病
+                            {% else %}
+                                {{ label }}
+                            {% endif %}
+                        {% else %}
+                            {{ label }}
+                        {% endif %}
                     </option>
                 {% endfor %}
             </select>
         </div>
 
-        <button type="submit">Apply Filter</button>
+        <button type="submit">
+            {% if current_language == "ja" %}
+                絞り込む
+            {% else %}
+                Apply Filter
+            {% endif %}
+        </button>
 
-        <a href="{% url 'detection:history' %}">Reset</a>
+        <a href="{% url 'detection:history' %}">
+            {% if current_language == "ja" %}
+                リセット
+            {% else %}
+                Reset
+            {% endif %}
+        </a>
     </form>
 
     <p>
         <a href="{% url 'detection:home' %}">
-            Analyze another leaf →
+            {% if current_language == "ja" %}
+                別の葉を解析する →
+            {% else %}
+                Analyze another leaf →
+            {% endif %}
         </a>
     </p>
 
     <p>
         <a href="{% url 'detection:export_history' %}">
-            Download All History CSV ↓
+            {% if current_language == "ja" %}
+                全履歴をCSVでダウンロード ↓
+            {% else %}
+                Download All History CSV ↓
+            {% endif %}
         </a>
     </p>
 
     <p class="muted">
-        CSV includes all your saved predictions,
-        regardless of the selected filter.
+        {% if current_language == "ja" %}
+            CSVには、選択した条件にかかわらず、
+            保存したすべての予測結果が含まれます。
+            CSV内の項目名と予測ラベルは英語です。
+        {% else %}
+            CSV includes all your saved predictions,
+            regardless of the selected filter.
+            CSV headings and prediction labels are in English.
+        {% endif %}
     </p>
 
     <div class="table-wrap">
         <table>
             <thead>
                 <tr>
-                    <th scope="col">Date / Time (Japan)</th>
-                    <th scope="col">Prediction</th>
-                    <th scope="col">Model score</th>
+                    <th scope="col">
+                        {% if current_language == "ja" %}
+                            日時（日本時間）
+                        {% else %}
+                            Date / Time (Japan)
+                        {% endif %}
+                    </th>
+                    <th scope="col">
+                        {% if current_language == "ja" %}
+                            予測結果
+                        {% else %}
+                            Prediction
+                        {% endif %}
+                    </th>
+                    <th scope="col">
+                        {% if current_language == "ja" %}
+                            モデルスコア
+                        {% else %}
+                            Model score
+                        {% endif %}
+                    </th>
                 </tr>
             </thead>
 
             <tbody>
                 {% for item in predictions %}
                     <tr>
-                        <td>
-                            {{ item.created_at|date:"Y-m-d H:i" }}
-                        </td>
+                        <td>{{ item.created_at|date:"Y-m-d H:i" }}</td>
 
                         <td>
                             <a href="{% url 'detection:result' item.pk %}">
-                                {{ item.label }}
+                                {% if current_language == "ja" %}
+                                    {% if item.label == "Tomato — Healthy" %}
+                                        トマト — 健康
+                                    {% elif item.label == "Tomato — Early blight" %}
+                                        トマト — 夏疫病
+                                    {% elif item.label == "Tomato — Late blight" %}
+                                        トマト — 疫病
+                                    {% elif item.label == "Tomato — Leaf mold" %}
+                                        トマト — 葉かび病
+                                    {% else %}
+                                        {{ item.label }}
+                                    {% endif %}
+                                {% else %}
+                                    {{ item.label }}
+                                {% endif %}
                             </a>
                         </td>
 
@@ -81,8 +177,13 @@
                 {% empty %}
                     <tr>
                         <td colspan="3" class="empty">
-                            No predictions match this filter.
-                            Try another filter or analyze a leaf.
+                            {% if current_language == "ja" %}
+                                条件に一致する予測結果はありません。
+                                条件を変更するか、葉を解析してください。
+                            {% else %}
+                                No predictions match this filter.
+                                Try another filter or analyze a leaf.
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
@@ -91,21 +192,37 @@
     </div>
 
     {% if page_obj.has_other_pages %}
-        <nav class="pagination" aria-label="History pages">
+        <nav
+            class="pagination"
+            aria-label="{% if current_language == 'ja' %}履歴のページ{% else %}History pages{% endif %}"
+        >
             {% if page_obj.has_previous %}
                 <a href="?condition={{ selected|urlencode }}&amp;page={{ page_obj.previous_page_number }}">
-                    ← Previous
+                    {% if current_language == "ja" %}
+                        ← 前へ
+                    {% else %}
+                        ← Previous
+                    {% endif %}
                 </a>
             {% endif %}
 
             <span>
-                Page {{ page_obj.number }}
-                of {{ page_obj.paginator.num_pages }}
+                {% if current_language == "ja" %}
+                    {{ page_obj.paginator.num_pages }}ページ中
+                    {{ page_obj.number }}ページ
+                {% else %}
+                    Page {{ page_obj.number }}
+                    of {{ page_obj.paginator.num_pages }}
+                {% endif %}
             </span>
 
             {% if page_obj.has_next %}
                 <a href="?condition={{ selected|urlencode }}&amp;page={{ page_obj.next_page_number }}">
-                    Next →
+                    {% if current_language == "ja" %}
+                        次へ →
+                    {% else %}
+                        Next →
+                    {% endif %}
                 </a>
             {% endif %}
         </nav>

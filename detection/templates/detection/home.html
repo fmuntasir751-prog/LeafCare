@@ -1,23 +1,49 @@
 {% extends "detection/base.html" %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Analyze Leaf | LeafCare{% endblock %}
+{% block title %}
+    {% if current_language == "ja" %}葉を解析{% else %}Analyze Leaf{% endif %} | LeafCare
+{% endblock %}
 
 {% block content %}
 <section class="hero">
-    <div class="tag">PLANT DISEASE DETECTION</div>
+    <div class="tag">
+        {% if current_language == "ja" %}
+            植物の病気を画像でチェック
+        {% else %}
+            PLANT DISEASE DETECTION
+        {% endif %}
+    </div>
 
-    <h1>Understand your plant, one leaf at a time.</h1>
+    <h1>
+        {% if current_language == "ja" %}
+            一枚の葉から、植物の状態を知ろう。
+        {% else %}
+            Understand your plant, one leaf at a time.
+        {% endif %}
+    </h1>
 
     <p class="intro">
-        Upload a clear photo of a single tomato leaf.
-        LeafCare compares healthy leaves, early blight,
-        late blight, and leaf mold.
+        {% if current_language == "ja" %}
+            トマトの葉を一枚、鮮明に撮影してアップロードしてください。
+            LeafCareは、健康な葉・夏疫病・疫病・葉かび病の
+            4つのクラスを比較します。
+        {% else %}
+            Upload a clear photo of a single tomato leaf.
+            LeafCare compares healthy leaves, early blight,
+            late blight, and leaf mold.
+        {% endif %}
     </p>
 </section>
 
 <section class="card">
-    <h2>Upload a leaf photo</h2>
+    <h2>
+        {% if current_language == "ja" %}
+            葉の写真をアップロード
+        {% else %}
+            Upload a leaf photo
+        {% endif %}
+    </h2>
 
     <form
         id="upload-form"
@@ -27,12 +53,18 @@
         {% csrf_token %}
         {{ form.as_p }}
 
-        <p class="hint">JPEG or PNG · Maximum 5 MB</p>
+        <p class="hint">
+            {% if current_language == "ja" %}
+                JPEG または PNG・最大5 MB
+            {% else %}
+                JPEG or PNG · Maximum 5 MB
+            {% endif %}
+        </p>
 
         <img
             id="selected-preview"
             class="preview"
-            alt="Selected photo preview"
+            alt="{% if current_language == 'ja' %}選択した写真のプレビュー{% else %}Selected photo preview{% endif %}"
             hidden
         >
 
@@ -41,7 +73,11 @@
             class="upload-button"
             type="submit"
         >
-            Analyze Leaf
+            {% if current_language == "ja" %}
+                葉を解析する
+            {% else %}
+                Analyze Leaf
+            {% endif %}
         </button>
 
         <p

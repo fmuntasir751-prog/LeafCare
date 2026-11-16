@@ -1,32 +1,87 @@
 {% extends "detection/base.html" %}
 
-{% block title %}Model Performance | LeafCare{% endblock %}
+{% block title %}
+    {% if current_language == "ja" %}
+        モデルの評価
+    {% else %}
+        Model Performance
+    {% endif %} | LeafCare
+{% endblock %}
 
 {% block content %}
 <section class="card">
-    <h1>Model performance</h1>
+    <h1>
+        {% if current_language == "ja" %}
+            モデルの評価
+        {% else %}
+            Model performance
+        {% endif %}
+    </h1>
 
     <p class="muted">
-        Saved evaluation results for the MobileNetV3 Small model.
-        These are dataset test results, not your personal history.
+        {% if current_language == "ja" %}
+            病気の分類モデルとトマト葉の判定モデルは、
+            それぞれ別に評価しています。
+            このページは個人の解析履歴ではありません。
+        {% else %}
+            Disease classification and tomato leaf checking are
+            evaluated separately. These results are not your
+            personal prediction history.
+        {% endif %}
+    </p>
+
+    <h2>
+        {% if current_language == "ja" %}
+            病気の分類
+        {% else %}
+            Disease classification
+        {% endif %}
+    </h2>
+
+    <p class="muted">
+        {% if current_language == "ja" %}
+            MobileNetV3 Smallはトマトの葉の4つのクラスを比較します。
+            以下は病気の分類モデル単体の評価結果です。
+        {% else %}
+            MobileNetV3 Small compares four tomato leaf classes.
+            These metrics evaluate the disease model alone.
+        {% endif %}
     </p>
 
     {% if report %}
         <div class="stats">
             <article class="stat">
-                <span>Test accuracy</span>
+                <span>
+                    {% if current_language == "ja" %}
+                        テスト正解率
+                    {% else %}
+                        Test accuracy
+                    {% endif %}
+                </span>
                 <strong>
                     {{ report.accuracy_percent|floatformat:2 }}%
                 </strong>
             </article>
 
             <article class="stat">
-                <span>Test images</span>
+                <span>
+                    {% if current_language == "ja" %}
+                        テスト画像数
+                    {% else %}
+                        Test images
+                    {% endif %}
+                </span>
                 <strong>{{ report.test_images }}</strong>
             </article>
 
             <article class="stat">
-                <span>Selected epoch</span>
+                <span>
+                    {% if current_language == "ja" %}
+                        選択されたエポック
+                    {% else %}
+                        Selected epoch
+                    {% endif %}
+                </span>
                 <strong>{{ report.epoch }}</strong>
             </article>
         </div>
@@ -35,18 +90,58 @@
             <table>
                 <thead>
                     <tr>
-                        <th scope="col">Class</th>
-                        <th scope="col">Precision</th>
-                        <th scope="col">Recall</th>
+                        <th scope="col">
+                            {% if current_language == "ja" %}
+                                クラス
+                            {% else %}
+                                Class
+                            {% endif %}
+                        </th>
+                        <th scope="col">
+                            {% if current_language == "ja" %}
+                                適合率
+                            {% else %}
+                                Precision
+                            {% endif %}
+                        </th>
+                        <th scope="col">
+                            {% if current_language == "ja" %}
+                                再現率
+                            {% else %}
+                                Recall
+                            {% endif %}
+                        </th>
                         <th scope="col">F1</th>
-                        <th scope="col">Images</th>
+                        <th scope="col">
+                            {% if current_language == "ja" %}
+                                画像数
+                            {% else %}
+                                Images
+                            {% endif %}
+                        </th>
                     </tr>
                 </thead>
 
                 <tbody>
                     {% for row in rows %}
                         <tr>
-                            <th scope="row">{{ row.name }}</th>
+                            <th scope="row">
+                                {% if current_language == "ja" %}
+                                    {% if row.name == "Early blight" %}
+                                        夏疫病
+                                    {% elif row.name == "Late blight" %}
+                                        疫病
+                                    {% elif row.name == "Leaf Mold" or row.name == "Leaf mold" %}
+                                        葉かび病
+                                    {% elif row.name == "healthy" or row.name == "Healthy" %}
+                                        健康
+                                    {% else %}
+                                        {{ row.name }}
+                                    {% endif %}
+                                {% else %}
+                                    {{ row.name }}
+                                {% endif %}
+                            </th>
                             <td>{{ row.precision|floatformat:2 }}%</td>
                             <td>{{ row.recall|floatformat:2 }}%</td>
                             <td>{{ row.f1|floatformat:2 }}%</td>
@@ -56,50 +151,358 @@
                 </tbody>
             </table>
         </div>
-<h2 class="section-title">Confusion matrix</h2>
 
-<img
-    class="matrix-image"
-    src="{% url 'detection:confusion_matrix_image' %}"
-    alt="Confusion matrix comparing actual and predicted tomato leaf classes"
->
+        <h2 class="section-title">
+            {% if current_language == "ja" %}
+                混同行列
+            {% else %}
+                Confusion matrix
+            {% endif %}
+        </h2>
 
-<p class="muted">
-    Rows show actual classes; columns show predicted classes.
-    Diagonal cells are correct predictions.
-    Other cells show classification mistakes.
-</p>
+        <img
+            class="matrix-image"
+            src="{% url 'detection:confusion_matrix_image' %}"
+            alt="{% if current_language == 'ja' %}トマト葉の実際のクラスと予測クラスを比較する混同行列{% else %}Confusion matrix comparing actual and predicted tomato leaf classes{% endif %}"
+        >
+
+        <p class="muted">
+            {% if current_language == "ja" %}
+                行は実際のクラス、列は予測されたクラスを示します。
+                対角線上のセルは正しい予測、それ以外は分類の誤りです。
+                図内のラベルは英語です。
+            {% else %}
+                Rows show actual classes; columns show predicted classes.
+                Diagonal cells are correct predictions.
+                Other cells show classification mistakes.
+                Labels inside the figure are in English.
+            {% endif %}
+        </p>
+
         <details class="notice">
-            <summary>What do these metrics mean?</summary>
+            <summary>
+                {% if current_language == "ja" %}
+                    評価指標の意味
+                {% else %}
+                    What do these metrics mean?
+                {% endif %}
+            </summary>
 
-            <p>
-                Precision: among predictions for a class,
-                how many were correct.
-            </p>
-
-            <p>
-                Recall: among actual images of a class,
-                how many the model correctly identified.
-            </p>
-
-            <p>
-                F1: a combined measure of precision and recall.
-            </p>
+            {% if current_language == "ja" %}
+                <p>
+                    適合率：あるクラスと予測した画像のうち、
+                    実際にそのクラスだった割合です。
+                </p>
+                <p>
+                    再現率：実際にあるクラスに属する画像のうち、
+                    正しく識別できた割合です。
+                </p>
+                <p>F1：適合率と再現率の調和平均です。</p>
+            {% else %}
+                <p>
+                    Precision: among predictions for a class,
+                    how many were correct.
+                </p>
+                <p>
+                    Recall: among actual images of a class,
+                    how many the model correctly identified.
+                </p>
+                <p>F1: the harmonic mean of precision and recall.</p>
+            {% endif %}
         </details>
 
         <p class="notice">
-            Testing used a split from the same PlantVillage dataset.
-            Exact pixel duplicates were excluded before splitting.
-            Similar photos or different photos of the same leaf may
-            still exist across splits. Performance on real-world
-            phone photos has not yet been established.
+            {% if current_language == "ja" %}
+                同じPlantVillageデータセットから分割した画像で評価しました。
+                分割前に画素が完全に一致する重複画像を除外しましたが、
+                類似画像や同じ葉を撮影した別の写真が、
+                異なる分割に含まれている可能性があります。
+                独自に収集したスマートフォン写真での
+                病気の分類性能は、まだ確認していません。
+            {% else %}
+                Testing used a split from the same PlantVillage dataset.
+                Exact pixel duplicates were excluded before splitting.
+                Similar photos or different photos of the same leaf may
+                still exist across splits. Disease classification
+                performance on independently collected phone photos
+                has not yet been established.
+            {% endif %}
         </p>
     {% else %}
         <p class="notice">
-            Evaluation report is unavailable.
-            Ask the administrator to check
-            artifacts/test_metrics.json.
+            {% if current_language == "ja" %}
+                病気の分類の評価レポートが見つかりません。
+                管理者にartifacts/test_metrics.jsonの確認を依頼してください。
+            {% else %}
+                Disease evaluation report is unavailable.
+                Ask the administrator to check artifacts/test_metrics.json.
+            {% endif %}
         </p>
     {% endif %}
+</section>
+
+<section class="card">
+    <h2>
+        {% if current_language == "ja" %}
+            トマト葉の判定：V1とV2の比較
+        {% else %}
+            Tomato leaf checker: V1 vs V2
+        {% endif %}
+    </h2>
+
+    <p class="muted">
+        {% if current_language == "ja" %}
+            病気を分類する前に、トマトの葉かどうかを判定します。
+            V2では、トマト以外の植物の葉を負例の学習データに追加しました。
+        {% else %}
+            The checker runs before disease classification.
+            V2 adds non-tomato plant leaves to the negative training examples.
+        {% endif %}
+    </p>
+
+    <p>
+        {% if current_language == "ja" %}
+            両モデルを同じ540枚で評価しました。
+            内訳はトマト葉200枚、他の植物の葉140枚、
+            その他の物体200枚です。
+        {% else %}
+            Both versions were evaluated on the same 540 images:
+            200 tomato leaf images, 140 non-tomato leaf images
+            and 200 object images.
+        {% endif %}
+    </p>
+
+    <div class="table-wrap">
+        <table>
+            <caption>
+                {% if current_language == "ja" %}
+                    保存済みの比較結果
+                {% else %}
+                    Recorded comparison results
+                {% endif %}
+            </caption>
+
+            <thead>
+                <tr>
+                    <th scope="col">
+                        {% if current_language == "ja" %}
+                            評価項目
+                        {% else %}
+                            Metric
+                        {% endif %}
+                    </th>
+                    <th scope="col">V1</th>
+                    <th scope="col">V2</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <th scope="row">
+                        {% if current_language == "ja" %}
+                            テスト正解率
+                        {% else %}
+                            Test accuracy
+                        {% endif %}
+                    </th>
+                    <td>74.44%</td>
+                    <td>97.96%</td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        {% if current_language == "ja" %}
+                            バランス正解率
+                        {% else %}
+                            Balanced accuracy
+                        {% endif %}
+                    </th>
+                    <td>79.71%</td>
+                    <td>98.07%</td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        {% if current_language == "ja" %}
+                            トマト葉の受け入れ率
+                        {% else %}
+                            Tomato acceptance
+                        {% endif %}
+                    </th>
+                    <td>100.00%</td>
+                    <td>98.50%</td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        {% if current_language == "ja" %}
+                            他の植物の葉を誤って受け入れた枚数
+                        {% else %}
+                            Non-tomato leaves incorrectly accepted
+                        {% endif %}
+                    </th>
+                    <td>138 / 140</td>
+                    <td>7 / 140</td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        {% if current_language == "ja" %}
+                            その他の物体を誤って受け入れた枚数
+                        {% else %}
+                            Objects incorrectly accepted
+                        {% endif %}
+                    </th>
+                    <td>0 / 200</td>
+                    <td>1 / 200</td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        {% if current_language == "ja" %}
+                            選択されたエポック
+                        {% else %}
+                            Selected epoch
+                        {% endif %}
+                    </th>
+                    <td>6</td>
+                    <td>9</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <p class="muted">
+        {% if current_language == "ja" %}
+            バランス正解率は、2つのクラスの再現率の平均です。
+            両モデルとも、出力値が最も高いクラスを選ぶ
+            argmax方式で判定しています。
+        {% else %}
+            Balanced accuracy is the average recall of the two checker
+            classes. Both versions use argmax: the class with the
+            highest model output is selected.
+        {% endif %}
+    </p>
+
+    <p class="notice">
+        {% if current_language == "ja" %}
+            一部のテスト画像は以前の評価でも使用しているため、
+            完全に独立した新しいテストではありません。
+            類似画像や同じ葉の写真が異なる分割に含まれる可能性があります。
+            無関係な画像を受け入れたり、
+            トマト葉を拒否したりする場合があります。
+        {% else %}
+            Some test images were reused from the earlier checker
+            evaluation, so this is not a completely independent new test.
+            Similar images or photos of the same leaf may cross splits.
+            The checker can still accept unrelated images and reject
+            tomato leaves.
+        {% endif %}
+    </p>
+</section>
+
+<section class="card">
+    <h2>
+        {% if current_language == "ja" %}
+            スマートフォン写真による予備テスト
+        {% else %}
+            Preliminary phone photo test
+        {% endif %}
+    </h2>
+
+    <p class="muted">
+        {% if current_language == "ja" %}
+            自分で撮影したトマト以外の葉の写真5枚を使用し、
+            結果を手動で記録しました。
+            これらの写真は学習には使用していません。
+        {% else %}
+            Manually recorded test using five personally photographed
+            non-tomato leaf images. These images were kept out of training.
+        {% endif %}
+    </p>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th scope="col">
+                        {% if current_language == "ja" %}
+                            テスト項目
+                        {% else %}
+                            Test item
+                        {% endif %}
+                    </th>
+                    <th scope="col">
+                        {% if current_language == "ja" %}
+                            結果
+                        {% else %}
+                            Result
+                        {% endif %}
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <th scope="row">
+                        {% if current_language == "ja" %}
+                            テストした他の植物の葉の写真
+                        {% else %}
+                            Non-tomato leaf photos tested
+                        {% endif %}
+                    </th>
+                    <td>5</td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        {% if current_language == "ja" %}
+                            正しく拒否した枚数
+                        {% else %}
+                            Correctly rejected
+                        {% endif %}
+                    </th>
+                    <td>5 / 5</td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        {% if current_language == "ja" %}
+                            誤って受け入れた枚数
+                        {% else %}
+                            Incorrectly accepted
+                        {% endif %}
+                    </th>
+                    <td>0 / 5</td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        {% if current_language == "ja" %}
+                            スマートフォンで撮影したトマト葉
+                        {% else %}
+                            Phone photos of tomato leaves
+                        {% endif %}
+                    </th>
+                    <td>
+                        {% if current_language == "ja" %}
+                            未検証
+                        {% else %}
+                            Not yet tested
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <p class="notice">
+        {% if current_language == "ja" %}
+            5枚だけでは、実環境での一般的な性能は判断できません。
+            スマートフォン写真でのトマト葉の受け入れ性能と
+            病気の分類性能は未検証です。
+            判定モデルと病気の分類モデルを組み合わせた
+            システム全体の正解率も、まだ測定していません。
+            モデルスコアは結果の正しさを保証しません。
+        {% else %}
+            Five images are too few to establish general real-world
+            performance. Tomato acceptance and disease classification
+            on phone photos remain untested. Overall accuracy of the
+            checker and disease model working together has not been
+            measured. Model scores do not guarantee correctness.
+        {% endif %}
+    </p>
 </section>
 {% endblock %}

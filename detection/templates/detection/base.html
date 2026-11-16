@@ -1,6 +1,7 @@
-{% load static %}
+{% load static i18n %}
+{% get_current_language as current_language %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ current_language }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,24 +20,48 @@
             🌿 LeafCare
         </a>
 
-        <nav aria-label="Main navigation">
+        <nav
+            aria-label="{% if current_language == 'ja' %}メインナビゲーション{% else %}Main navigation{% endif %}"
+        >
             {% if request.user.is_authenticated %}
-                <span>Hello, {{ request.user.username }}</span>
+                <span>
+                    {% if current_language == "ja" %}
+                        {{ request.user.username }}さん
+                    {% else %}
+                        Hello, {{ request.user.username }}
+                    {% endif %}
+                </span>
 
                 <a href="{% url 'detection:dashboard' %}">
-                    Dashboard
+                    {% if current_language == "ja" %}
+                        ダッシュボード
+                    {% else %}
+                        Dashboard
+                    {% endif %}
                 </a>
 
                 <a href="{% url 'detection:performance' %}">
-                    Model Performance
+                    {% if current_language == "ja" %}
+                        モデルの評価
+                    {% else %}
+                        Model Performance
+                    {% endif %}
                 </a>
 
                 <a href="{% url 'detection:home' %}">
-                    Analyze
+                    {% if current_language == "ja" %}
+                        葉を解析
+                    {% else %}
+                        Analyze
+                    {% endif %}
                 </a>
 
                 <a href="{% url 'detection:history' %}">
-                    My History
+                    {% if current_language == "ja" %}
+                        解析履歴
+                    {% else %}
+                        My History
+                    {% endif %}
                 </a>
 
                 <form
@@ -47,18 +72,72 @@
                     {% csrf_token %}
 
                     <button class="logout-button" type="submit">
-                        Logout
+                        {% if current_language == "ja" %}
+                            ログアウト
+                        {% else %}
+                            Logout
+                        {% endif %}
                     </button>
                 </form>
             {% else %}
                 <a href="{% url 'detection:login' %}">
-                    Login
+                    {% if current_language == "ja" %}
+                        ログイン
+                    {% else %}
+                        Login
+                    {% endif %}
                 </a>
 
                 <a href="{% url 'detection:register' %}">
-                    Register
+                    {% if current_language == "ja" %}
+                        新規登録
+                    {% else %}
+                        Register
+                    {% endif %}
                 </a>
             {% endif %}
+
+            <form
+                class="language-form"
+                method="post"
+                action="{% url 'set_language' %}"
+            >
+                {% csrf_token %}
+
+                <input
+                    type="hidden"
+                    name="next"
+                    value="{{ request.get_full_path }}"
+                >
+
+                <label class="sr-only" for="language-select">
+                    Language / 言語
+                </label>
+
+                <select id="language-select" name="language">
+                    <option
+                        value="en"
+                        {% if current_language == "en" %}selected{% endif %}
+                    >
+                        English
+                    </option>
+
+                    <option
+                        value="ja"
+                        {% if current_language == "ja" %}selected{% endif %}
+                    >
+                        日本語
+                    </option>
+                </select>
+
+                <button class="logout-button" type="submit">
+                    {% if current_language == "ja" %}
+                        変更
+                    {% else %}
+                        Apply
+                    {% endif %}
+                </button>
+            </form>
         </nav>
     </header>
 

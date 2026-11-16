@@ -1,39 +1,97 @@
 {% extends "detection/base.html" %}
 
-{% block title %}Analysis Result | LeafCare{% endblock %}
+{% block title %}
+    {% if current_language == "ja" %}
+        解析結果
+    {% else %}
+        Analysis Result
+    {% endif %} | LeafCare
+{% endblock %}
 
 {% block content %}
 <section class="card">
-    <div class="tag">ANALYSIS SAVED</div>
+    <div class="tag">
+        {% if current_language == "ja" %}
+            解析結果を保存しました
+        {% else %}
+            ANALYSIS SAVED
+        {% endif %}
+    </div>
 
-    <h1>Analysis result</h1>
+    <h1>
+        {% if current_language == "ja" %}
+            解析結果
+        {% else %}
+            Analysis result
+        {% endif %}
+    </h1>
 
-    <h2 class="result-label">{{ prediction.label }}</h2>
+    <h2 class="result-label">
+        {% if current_language == "ja" %}
+            {% if prediction.label == "Tomato — Healthy" %}
+                トマト — 健康
+            {% elif prediction.label == "Tomato — Early blight" %}
+                トマト — 夏疫病
+            {% elif prediction.label == "Tomato — Late blight" %}
+                トマト — 疫病
+            {% elif prediction.label == "Tomato — Leaf mold" %}
+                トマト — 葉かび病
+            {% else %}
+                {{ prediction.label }}
+            {% endif %}
+        {% else %}
+            {{ prediction.label }}
+        {% endif %}
+    </h2>
 
     <p>
-        Model score:
+        {% if current_language == "ja" %}
+            モデルスコア：
+        {% else %}
+            Model score:
+        {% endif %}
+
         <strong>{{ prediction.score|floatformat:2 }}%</strong>
     </p>
 
     <p class="muted">
-        {{ prediction.created_at|date:"Y-m-d H:i" }} (Japan)
+        {{ prediction.created_at|date:"Y-m-d H:i" }}
+        {% if current_language == "ja" %}
+            （日本時間）
+        {% else %}
+            (Japan)
+        {% endif %}
     </p>
 
     <p class="notice">
-        This prototype compares four tomato leaf classes.
-        Unknown diseases and unrelated images may receive
-        incorrect results. Model scores do not guarantee accuracy.
+        {% if current_language == "ja" %}
+            この試作システムは、トマトの葉の4つのクラスを比較します。
+            未対応の病気や無関係な画像では、誤った結果が出る場合があります。
+            モデルスコアは予測の正しさを保証するものではありません。
+        {% else %}
+            This prototype compares four tomato leaf classes.
+            Unknown diseases and unrelated images may receive
+            incorrect results. Model scores do not guarantee accuracy.
+        {% endif %}
     </p>
 
     <p>
         <a href="{% url 'detection:home' %}">
-            Analyze another leaf →
+            {% if current_language == "ja" %}
+                別の葉を解析する →
+            {% else %}
+                Analyze another leaf →
+            {% endif %}
         </a>
     </p>
 
     <p>
         <a href="{% url 'detection:history' %}">
-            View my history →
+            {% if current_language == "ja" %}
+                自分の解析履歴を見る →
+            {% else %}
+                View my history →
+            {% endif %}
         </a>
     </p>
 </section>

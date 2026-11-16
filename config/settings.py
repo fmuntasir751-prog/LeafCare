@@ -38,6 +38,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -104,18 +105,28 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-LANGUAGE_CODE = "en-us"
+# Supported languages
+LANGUAGE_CODE = "en"
 
-TIME_ZONE = "Asia/Tokyo"
+LANGUAGES = [
+    ("en", "English"),
+    ("ja", "日本語"),
+]
 
 USE_I18N = True
+
+
+# Time zone
+TIME_ZONE = "Asia/Tokyo"
 
 USE_TZ = True
 
 
+# Static files
 STATIC_URL = "/static/"
 
 
+# Development email backend
 MAILERS = {
     "default": {
         "BACKEND": "django.core.mail.backends.console.EmailBackend",
@@ -123,6 +134,7 @@ MAILERS = {
 }
 
 
+# Authentication redirects
 LOGIN_URL = "detection:login"
 
 LOGIN_REDIRECT_URL = "detection:home"

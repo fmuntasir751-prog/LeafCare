@@ -1,28 +1,56 @@
 {% extends "detection/base.html" %}
 
-{% block title %}Login | LeafCare{% endblock %}
+{% block title %}
+    {% if current_language == "ja" %}ログイン{% else %}Login{% endif %} | LeafCare
+{% endblock %}
 
 {% block content %}
 <section class="card auth-card">
-    <h1>Welcome back</h1>
+    <h1>
+        {% if current_language == "ja" %}
+            LeafCareへようこそ
+        {% else %}
+            Welcome back
+        {% endif %}
+    </h1>
+
     <p class="muted">
-        Login to analyze a leaf or view your saved results.
+        {% if current_language == "ja" %}
+            ログインして葉を解析したり、
+            保存した結果を確認したりできます。
+        {% else %}
+            Login to analyze a leaf or view your saved results.
+        {% endif %}
     </p>
 
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
+
         <input type="hidden" name="next" value="{{ next }}">
 
         <button class="full-width" type="submit">
-            Login
+            {% if current_language == "ja" %}
+                ログイン
+            {% else %}
+                Login
+            {% endif %}
         </button>
     </form>
 
     <p>
-        New to LeafCare?
+        {% if current_language == "ja" %}
+            初めてご利用の方：
+        {% else %}
+            New to LeafCare?
+        {% endif %}
+
         <a href="{% url 'detection:register' %}">
-            Create an account
+            {% if current_language == "ja" %}
+                アカウントを作成
+            {% else %}
+                Create an account
+            {% endif %}
         </a>
     </p>
 </section>

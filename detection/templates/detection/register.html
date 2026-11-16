@@ -1,25 +1,58 @@
 {% extends "detection/base.html" %}
 
-{% block title %}Create Account | LeafCare{% endblock %}
+{% block title %}
+    {% if current_language == "ja" %}
+        アカウント作成
+    {% else %}
+        Create Account
+    {% endif %} | LeafCare
+{% endblock %}
 
 {% block content %}
 <section class="card auth-card">
-    <h1>Create your account</h1>
+    <h1>
+        {% if current_language == "ja" %}
+            アカウントを作成
+        {% else %}
+            Create your account
+        {% endif %}
+    </h1>
+
     <p class="muted">
-        Analyze tomato leaves and keep your prediction history.
+        {% if current_language == "ja" %}
+            トマトの葉を解析し、予測結果を履歴に保存できます。
+        {% else %}
+            Analyze tomato leaves and keep your prediction history.
+        {% endif %}
     </p>
 
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
+
         <button class="full-width" type="submit">
-            Create Account
+            {% if current_language == "ja" %}
+                アカウントを作成
+            {% else %}
+                Create Account
+            {% endif %}
         </button>
     </form>
 
     <p>
-        Already registered?
-        <a href="{% url 'detection:login' %}">Login</a>
+        {% if current_language == "ja" %}
+            すでに登録済みの方：
+        {% else %}
+            Already registered?
+        {% endif %}
+
+        <a href="{% url 'detection:login' %}">
+            {% if current_language == "ja" %}
+                ログイン
+            {% else %}
+                Login
+            {% endif %}
+        </a>
     </p>
 </section>
 {% endblock %}

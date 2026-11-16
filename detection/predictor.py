@@ -2,11 +2,13 @@ from functools import lru_cache
 
 import torch
 from django.conf import settings
+from django.utils.translation import get_language
 from PIL import Image
 from torch import nn
 from torchvision import models
 
 
+# Keep stored labels consistent across languages.
 LABELS = {
     "Tomato___Early_blight": "Tomato — Early blight",
     "Tomato___Late_blight": "Tomato — Late blight",
@@ -33,6 +35,7 @@ def build_model(filename):
         model.classifier[3].in_features,
         len(classes),
     )
+
     model.load_state_dict(checkpoint["model_state_dict"])
     model.eval()
 
@@ -75,11 +78,20 @@ def predict_leaf(upload):
 
     # Same argmax decision rule used during checker evaluation.
     if checker_classes[checker_index] != "tomato_leaf":
-        raise NotTomatoLeafError(
-            "This image was not accepted as a tomato leaf. "
-            "Please upload a clear photo of a single tomato leaf. "
-            "The checker can also make mistakes."
-        )
+        if (get_language() or "en").startswith("ja"):
+            message = (
+                "この画像はトマトの葉として受け入れられませんでした。"
+                "トマトの葉を一枚、鮮明に撮影してアップロードしてください。"
+                "判定モデルが誤る場合もあります。"
+            )
+        else:
+            message = (
+                "This image was not accepted as a tomato leaf. "
+                "Please upload a clear photo of a single tomato leaf. "
+                "The checker can also make mistakes."
+            )
+
+        raise NotTomatoLeafError(message)
 
     model, classes, preprocess = load_model()
     tensor = preprocess(rgb).unsqueeze(0)

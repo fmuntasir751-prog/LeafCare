@@ -6,6 +6,27 @@ if (form) {
     const button = document.getElementById("analyze-button");
     const status = document.getElementById("upload-status");
 
+    const isJapanese = document.documentElement.lang
+        .toLowerCase()
+        .startsWith("ja");
+
+    const messages = isJapanese
+        ? {
+            chooseImage: "葉の写真を選択してください。",
+            format: "JPEGまたはPNG形式の画像を選択してください。",
+            size: "画像サイズは5 MB以下にしてください。",
+            analyzing: "解析中…",
+            waiting: "写真を解析しています。しばらくお待ちください。",
+        }
+        : {
+            chooseImage: "Please choose a leaf photo.",
+            format: "Choose a JPEG or PNG image.",
+            size: "Image must be 5 MB or smaller.",
+            analyzing: "Analyzing…",
+            waiting: "Please wait while LeafCare analyzes your photo.",
+        };
+
+    const originalButtonText = button.textContent.trim();
     let previewUrl = null;
 
     function clearPreview() {
@@ -23,16 +44,17 @@ if (form) {
         input.setCustomValidity("");
 
         if (!file) {
+            input.setCustomValidity(messages.chooseImage);
             return false;
         }
 
         if (!["image/jpeg", "image/png"].includes(file.type)) {
-            input.setCustomValidity("Choose a JPEG or PNG image.");
+            input.setCustomValidity(messages.format);
             return false;
         }
 
         if (file.size > 5 * 1024 * 1024) {
-            input.setCustomValidity("Image must be 5 MB or smaller.");
+            input.setCustomValidity(messages.size);
             return false;
         }
 
@@ -64,15 +86,18 @@ if (form) {
         }
 
         button.disabled = true;
-        button.textContent = "Analyzing…";
-        status.textContent = "Please wait while LeafCare analyzes your photo.";
+        button.textContent = messages.analyzing;
+        status.textContent = messages.waiting;
         form.setAttribute("aria-busy", "true");
     });
 
     window.addEventListener("pageshow", () => {
         button.disabled = false;
-        button.textContent = "Analyze Leaf";
+        button.textContent = originalButtonText;
         status.textContent = "";
         form.removeAttribute("aria-busy");
+
+        // Clear any validation message restored by browser history.
+        input.setCustomValidity("");
     });
 }

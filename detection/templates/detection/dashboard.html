@@ -1,65 +1,145 @@
 {% extends "detection/base.html" %}
 
-{% block title %}Dashboard | LeafCare{% endblock %}
+{% block title %}
+    {% if current_language == "ja" %}ダッシュボード{% else %}Dashboard{% endif %} | LeafCare
+{% endblock %}
 
 {% block content %}
 <section class="card">
-    <h1>Your dashboard</h1>
+    <h1>
+        {% if current_language == "ja" %}
+            ダッシュボード
+        {% else %}
+            Your dashboard
+        {% endif %}
+    </h1>
 
     <p class="muted">
-        Welcome, {{ request.user.username }}.
-        Here is a summary of your saved analyses.
+        {% if current_language == "ja" %}
+            {{ request.user.username }}さん、こんにちは。
+            保存した解析結果の概要です。
+        {% else %}
+            Welcome, {{ request.user.username }}.
+            Here is a summary of your saved analyses.
+        {% endif %}
     </p>
 
     <div class="stats">
         <article class="stat">
-            <span>Total analyses</span>
+            <span>
+                {% if current_language == "ja" %}
+                    解析件数
+                {% else %}
+                    Total analyses
+                {% endif %}
+            </span>
             <strong>{{ total }}</strong>
         </article>
 
         <article class="stat">
-            <span>Healthy predictions</span>
+            <span>
+                {% if current_language == "ja" %}
+                    健康と予測された件数
+                {% else %}
+                    Healthy predictions
+                {% endif %}
+            </span>
             <strong>{{ healthy }}</strong>
         </article>
 
         <article class="stat">
-            <span>Disease predictions</span>
+            <span>
+                {% if current_language == "ja" %}
+                    病気と予測された件数
+                {% else %}
+                    Disease predictions
+                {% endif %}
+            </span>
             <strong>{{ disease }}</strong>
         </article>
     </div>
 
     <p class="muted">
-        These counts summarize model predictions, not confirmed
-        diagnoses or the number of unique plants.
+        {% if current_language == "ja" %}
+            この件数はモデルの予測結果を集計したものです。
+            確定診断の件数や、異なる植物の数ではありません。
+        {% else %}
+            These counts summarize model predictions, not confirmed
+            diagnoses or the number of unique plants.
+        {% endif %}
     </p>
 
     <p>
         <a href="{% url 'detection:home' %}">
-            Analyze a leaf →
+            {% if current_language == "ja" %}
+                葉を解析する →
+            {% else %}
+                Analyze a leaf →
+            {% endif %}
         </a>
     </p>
 </section>
 
 <section class="card" style="margin-top: 24px;">
-    <h2>Recent analyses</h2>
+    <h2>
+        {% if current_language == "ja" %}
+            最近の解析
+        {% else %}
+            Recent analyses
+        {% endif %}
+    </h2>
 
     <div class="table-wrap">
         <table>
             <thead>
                 <tr>
-                    <th scope="col">Date / Time (Japan)</th>
-                    <th scope="col">Prediction</th>
-                    <th scope="col">Model score</th>
+                    <th scope="col">
+                        {% if current_language == "ja" %}
+                            日時（日本時間）
+                        {% else %}
+                            Date / Time (Japan)
+                        {% endif %}
+                    </th>
+                    <th scope="col">
+                        {% if current_language == "ja" %}
+                            予測結果
+                        {% else %}
+                            Prediction
+                        {% endif %}
+                    </th>
+                    <th scope="col">
+                        {% if current_language == "ja" %}
+                            モデルスコア
+                        {% else %}
+                            Model score
+                        {% endif %}
+                    </th>
                 </tr>
             </thead>
 
             <tbody>
                 {% for item in recent %}
                     <tr>
+                        <td>{{ item.created_at|date:"Y-m-d H:i" }}</td>
+
                         <td>
-                            {{ item.created_at|date:"Y-m-d H:i" }}
+                            {% if current_language == "ja" %}
+                                {% if item.label == "Tomato — Healthy" %}
+                                    トマト — 健康
+                                {% elif item.label == "Tomato — Early blight" %}
+                                    トマト — 夏疫病
+                                {% elif item.label == "Tomato — Late blight" %}
+                                    トマト — 疫病
+                                {% elif item.label == "Tomato — Leaf mold" %}
+                                    トマト — 葉かび病
+                                {% else %}
+                                    {{ item.label }}
+                                {% endif %}
+                            {% else %}
+                                {{ item.label }}
+                            {% endif %}
                         </td>
-                        <td>{{ item.label }}</td>
+
                         <td class="score">
                             {{ item.score|floatformat:2 }}%
                         </td>
@@ -67,7 +147,12 @@
                 {% empty %}
                     <tr>
                         <td colspan="3" class="empty">
-                            No analyses yet. Upload your first leaf.
+                            {% if current_language == "ja" %}
+                                解析履歴はありません。
+                                最初の葉の写真をアップロードしてください。
+                            {% else %}
+                                No analyses yet. Upload your first leaf.
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
@@ -77,7 +162,11 @@
 
     <p>
         <a href="{% url 'detection:history' %}">
-            View history →
+            {% if current_language == "ja" %}
+                履歴を見る →
+            {% else %}
+                View history →
+            {% endif %}
         </a>
     </p>
 </section>

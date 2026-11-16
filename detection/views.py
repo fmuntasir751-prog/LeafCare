@@ -9,11 +9,18 @@ from django.core.paginator import Paginator
 from django.http import FileResponse, Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.utils.translation import get_language
 from django.views.decorators.http import require_http_methods
 
 from .forms import LeafUploadForm
 from .models import Prediction
 from .predictor import NotTomatoLeafError, predict_leaf
+
+
+def localized(english, japanese):
+    if (get_language() or "en").startswith("ja"):
+        return japanese
+    return english
 
 
 @require_http_methods(["GET", "POST"])
@@ -57,16 +64,24 @@ def home(request):
             except FileNotFoundError:
                 form.add_error(
                     None,
-                    "A required model file is unavailable. "
-                    "Please contact the administrator.",
+                    localized(
+                        "A required model file is unavailable. "
+                        "Please contact the administrator.",
+                        "必要なモデルファイルが見つかりません。"
+                        "管理者にお問い合わせください。",
+                    ),
                 )
 
             except (OSError, RuntimeError, ValueError, KeyError):
                 form.add_error(
                     None,
-                    "Analysis could not be completed. "
-                    "Please try another image or contact "
-                    "the administrator.",
+                    localized(
+                        "Analysis could not be completed. "
+                        "Please try another image or contact "
+                        "the administrator.",
+                        "解析を完了できませんでした。"
+                        "別の画像を試すか、管理者にお問い合わせください。",
+                    ),
                 )
 
             else:
@@ -156,7 +171,6 @@ def export_history(request):
         'attachment; filename="leafcare_history.csv"'
     )
 
-    # UTF-8 BOM helps Excel display the text correctly.
     response.write("\ufeff")
 
     writer = csv.writer(response)
@@ -220,6 +234,7 @@ def performance(request):
             / "artifacts"
             / "test_metrics.json"
         )
+
         report = json.loads(
             path.read_text(encoding="utf-8")
         )
@@ -271,7 +286,10 @@ def confusion_matrix_image(request):
         image = path.open("rb")
     except FileNotFoundError:
         raise Http404(
-            "Confusion matrix is unavailable."
+            localized(
+                "Confusion matrix is unavailable.",
+                "混同行列の画像が見つかりません。",
+            )
         ) from None
 
     return FileResponse(
