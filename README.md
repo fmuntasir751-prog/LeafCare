@@ -222,3 +222,21 @@ Keep a separate backup of the trained models.
 - Images were not used for training.
 - This small test does not establish general real-world accuracy.
 - Tomato acceptance on phone photos remains untested.
+## Languages / 対応言語
+
+LeafCare supports English and Japanese.
+Use the language selector in the header and press Apply / 変更.
+
+LeafCareは英語と日本語に対応しています。
+ヘッダーで言語を選択し、Apply / 変更を押してください。
+
+- Language selection is remembered using a browser cookie.
+- Navigation, page text, upload status and custom upload errors
+  support both languages.
+- Stored prediction labels and CSV exports remain in English.
+- Confusion matrix image labels remain in English.
+- Browser file-picker text depends on the browser language.
+
+### Language tests
+
+python manage.py test detection.test_language
