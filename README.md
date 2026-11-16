@@ -214,3 +214,11 @@ Place these files inside the artifacts directory:
 
 Model files and datasets are excluded from Git.
 Keep a separate backup of the trained models.
+## Preliminary Phone Photo Test
+
+- Tested 5 personally photographed non-tomato leaf images.
+- All 5 were rejected by the V2 checker.
+- False acceptances: 0/5.
+- Images were not used for training.
+- This small test does not establish general real-world accuracy.
+- Tomato acceptance on phone photos remains untested.
